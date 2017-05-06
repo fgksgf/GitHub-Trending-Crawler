@@ -91,4 +91,4 @@ if __name__ == '__main__':
         job()
 
         # Crawling the repos weekly
-        time.sleep(18 * 60 * 60 * 7)
+        time.sleep(24 * 60 * 60 * 5)
