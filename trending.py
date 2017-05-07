@@ -36,7 +36,7 @@ def create_markdown(date, filename):
 
 def crawl(language, filename):
     try:
-        url = 'https://github.com/trending/{language}?since=weekly'.format(language=language)
+        url = 'https://github.com/trending/{language}'.format(language=language)
         r = requests.get(url, headers=HEADERS)
         r.raise_for_status()
 
@@ -90,5 +90,5 @@ if __name__ == '__main__':
     while True:
         job()
 
-        # Crawling the repos weekly
-        time.sleep(24 * 60 * 60 * 5)
+        # Crawling the repos every day
+        time.sleep(24 * 60 * 60)
