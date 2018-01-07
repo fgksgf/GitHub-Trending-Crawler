@@ -20,8 +20,8 @@ objectives = ['python', 'java', 'unknown', 'c++', 'html']
 # Upload file by git
 def git_add_commit_push(date, filename):
     cmd_git_add = 'git add {filename}'.format(filename=filename)
-    cmd_git_commit = 'git commit -m "{date}"'.format(date=date)
-    cmd_git_push = 'git push -u origin master'
+    cmd_git_commit = 'sudo git commit -m "{date}"'.format(date=date)
+    cmd_git_push = 'sudo git push -u origin master'
 
     os.system(cmd_git_add)
     os.system(cmd_git_commit)
