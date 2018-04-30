@@ -3,7 +3,10 @@ import codecs
 import requests
 import os
 import time
-from bs4 import BeautifulSoup
+from pyquery import PyQuery as pq
+from wordcloud import WordCloud
+import jieba
+
 
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.96',
@@ -12,83 +15,215 @@ HEADERS = {
     'Accept-Language': 'zh-CN,zh;q=0.8'
 }
 
-CLASS = ['col-12', 'd-block', 'width-full', 'py-4', 'border-bottom']
+# Languages you are interested in
+# See https://github.com/trending for more available languages
+LANGUAGES = ['python', 'java', 'unknown', 'c++', 'html']
 
-objectives = ['python', 'java', 'unknown', 'c++', 'html']
+TRENDING_URL = 'https://github.com/trending/{language}'
+GITHUB_URL = 'https://github.com'
+
+# Used to store today's repos' descriptions
+CONTENT = []
 
 
-# Upload file by git
 def git_add_commit_push(date, filename):
-    cmd_git_add = 'git add {filename}'.format(filename=filename)
-    cmd_git_commit = 'sudo git commit -m "{date}"'.format(date=date)
-    cmd_git_push = 'sudo git push -u origin master'
+    """
+    Upload the markdown file and the image to GitHub by git. 
+    
+    :param date: today's date.
+    :param filename: the markdown file's name.
+    """
+    cmd_git_add_md = 'git add {filename}'.format(filename=filename)
+    cmd_git_add_img = 'git add img/{date}.png'.format(date=date)
+    cmd_git_commit = 'git commit -m "{date}"'.format(date=date)
+    cmd_git_push = 'git push -u origin master'
 
-    os.system(cmd_git_add)
+    os.system(cmd_git_add_md)
+    os.system(cmd_git_add_img)
     os.system(cmd_git_commit)
     os.system(cmd_git_push)
 
 
-# Create markdown file to save trending repos
 def create_markdown(date, filename):
+    """ 
+    Create a markdown file to save trending repos.
+    
+    :param date: today's date.
+    :param filename: the markdown file's name.
+    """
     with open(filename, 'w') as f:
-        f.write("## " + date + "\n")
+        f.write("# " + date + "\n")
+        f.write("See what the GitHub community is most excited about today.\n")
+
+
+def generate_word_cloud(content_list, date):
+    """
+    Generate a word cloud picture according to all descriptions of today.
+    Then save the picture at 'img/', which is named by date.
+    
+    :param content_list: a list contains all descriptions of today.
+    :param date: today's date.
+    """
+    # Join all strings in the list with ''
+    text = ''.join(content_list)
+
+    # Use jieba to do Chinese word segmentation first
+    word_list = jieba.cut(text, cut_all=False)
+    f = " ".join(word_list)
+
+    # Set the word cloud's attributes
+    wc = WordCloud(background_color="white",
+                   width=800,
+                   height=600,
+                   margin=2,
+                   font_path='MSYH.TTC',  # Use this font to ensure Chinese words can be shown
+                   random_state=20).generate(f)
+
+    # Save the picture
+    wc.to_file('img/{date}.png'.format(date=date))
+
+    # Use matplotlib.pyplot to show the image
+    # import matplotlib.pyplot as plt
+    # plt.imshow(wc)
+    # plt.axis("off")
+    # plt.show()
+
+
+def extract_info(dollar):
+    """
+    Extract useful information from html by pyquery, 
+    which contains the repo's url, name, description
+    and stars it got today.
+    
+    :param dollar: the pyquery object, just like $ in jquery 
+    :return: a dict includes above information
+    """
+    names = []
+    urls = []
+    stars = []
+    descriptions = []
+
+    ol = dollar('.repo-list').children()
+    for i in range(len(ol)):
+        li = ol.eq(i)
+
+        # postfix: '/Username/RepoName'
+        postfix = li('div.d-inline-block.col-9.mb-1 > h3 > a').attr('href')
+
+        # the complete url of the repo
+        url = GITHUB_URL + postfix
+        urls.append(url)
+
+        p = postfix.rindex('/')
+        # owner = postfix[:p]
+        repo_name = postfix[p + 1:]
+        names.append(repo_name)
+
+        # Get the description about the repo
+        description = li('.py-1').text().strip().replace('\n', '')
+        descriptions.append(description)
+        CONTENT.append(description)
+
+        # Get how many stars it got today
+        star = li('div.f6.text-gray.mt-2 > span.d-inline-block.float-sm-right').text().strip()
+        stars.append(star)
+
+    ret_dict = {'names': names, 'urls': urls, 'stars': stars, 'descriptions': descriptions}
+    return ret_dict
+
+
+def append_text_to_md(filename, language, info):
+    """
+    Append all repos' information of a language to the markdown file.
+    
+    :param filename: the markdown file's name
+    :param language: the programming language
+    :param info: a dict contains all repos' information
+    """
+    # Use codecs to solve the utf-8 encoding problem like Chinese
+    with codecs.open(filename, "a", "utf-8") as f:
+        f.write('\n## {language}\n'.format(language=language))
+        for i in range(len(info['names'])):
+            name = info['names'][i]
+            url = info['urls'][i]
+            star = info['stars'][i]
+            desc = info['descriptions'][i]
+            f.write(u"* [{name}]({url})(**{star}**): {desc}\n".format(name=name, url=url,
+                                                                      desc=desc,
+                                                                      star=star))
+
+
+def append_img_to_md(filename, date):
+    """
+    Append an image of word cloud based on all descriptions
+    to the markdown file.
+    
+    :param filename: the markdown file's name
+    :param date: today's date, the image's name as well
+    """
+    img_path = 'img/{date}.png'.format(date=date)
+    with codecs.open(filename, "a", "utf-8") as f:
+        f.write('\n## WordCloud\n')
+        f.write('![]({path})\n'.format(path=img_path))
 
 
 def crawl(language, filename):
+    """ 
+    Crawling the GitHub trending page of the language.
+    
+    :param language: the page of the language you want to get.
+    :param filename: the markdown file's name
+    """
     try:
-        url = 'https://github.com/trending/{language}'.format(language=language)
+        url = TRENDING_URL.format(language=language)
         r = requests.get(url, headers=HEADERS)
+
+        # If the status code is not 200, then raise the error
         r.raise_for_status()
 
-        soup = BeautifulSoup(r.text, "html.parser")
+        # Use pyquery to parse html
+        d = pq(r.text)
 
-        # codecs to solve the problem utf-8 codec like Chinese
-        with codecs.open(filename, "a", "utf-8") as f:
-            f.write('\n### {language}\n'.format(language=language))
-            for li in soup.find_all('li'):
-                if li.attrs.get('class') == CLASS:
-                    description = ''
-                    url = "https://github.com"
-                    if li.p:
-                        for s in li.p.contents:
-                            description += str(s).strip()
-                    postfix = li.h3.a.attrs['href']
-                    url += postfix
-                    # owner = postfix.spilt('/')[1]
-                    # title = postfix.spilt('/')[2]
-                    f.write(u"* [{title}]({url}): {description}\n".format(title=postfix[1:], url=url,
-                                                                          description=description))
-        print("Finish crawling: " + language)
-
+        info = extract_info(d)
+        append_text_to_md(filename, language, info)
+        print("Done: " + language)
     except requests.ConnectionError:
         print("Connection Error.")
     except IOError:
         print("IOError.")
 
 
-def job():
-    strdate = datetime.datetime.now().strftime('%Y-%m-%d')
-    filename = '{date}.md'.format(date=strdate)
+def main():
+    CONTENT.clear()
 
-    # create markdown file
-    create_markdown(strdate, filename)
+    # get today's date
+    today_date = datetime.datetime.now().strftime('%Y-%m-%d')
 
-    for obj in objectives:
+    # The markdown file's name
+    filename = '{date}.md'.format(date=today_date)
+
+    # Create markdown file
+    create_markdown(today_date, filename)
+
+    for lang in LANGUAGES:
         try:
-            crawl(obj, filename)
+            crawl(lang, filename)
         except:
-            print("Error: " + obj)
-            time.sleep(5)
+            print("Error: " + lang)
+            time.sleep(2)
             continue
-    print("Finish crawling: " + strdate)
 
-    # Upload results
-    git_add_commit_push(strdate, filename)
+    generate_word_cloud(CONTENT, today_date)
+    append_img_to_md(filename, today_date)
+    print("Finish crawling: " + today_date)
+
+    # Upload the markdown file to GitHub
+    # git_add_commit_push(today_date, filename)
 
 
 if __name__ == '__main__':
     while True:
-        job()
+        main()
 
-        # Crawling the repos every day
+        # Crawl the GitHub trending pages once a day
         time.sleep(24 * 60 * 60)
