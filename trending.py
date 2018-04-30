@@ -218,7 +218,7 @@ def main():
     print("Finish crawling: " + today_date)
 
     # Upload the markdown file to GitHub
-    # git_add_commit_push(today_date, filename)
+    git_add_commit_push(today_date, filename)
 
 
 if __name__ == '__main__':
