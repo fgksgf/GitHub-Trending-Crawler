@@ -15,11 +15,10 @@ The idea was inspired by [LJ147](https://github.com/LJ147/GithubTrending).
 ## Installation
 
 ``` bash
-$ wget https://github.com/fgksgf/GitHub-Trending-Crawler/archive/master.zip
-$ unzip master.zip
-$ rm master.zip
+$ wget https://github.com/fgksgf/GitHub-Trending-Crawler/archive/dev.zip
+$ unzip dev.zip
+$ rm dev.zip
 $ cd GitHub-Trending-Crawler/
-$ rm *.md
 $ pip3 install -r requirements.txt
 $ apt-get install python-tk python3-tk
 ```
