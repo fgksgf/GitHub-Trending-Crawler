@@ -19,6 +19,8 @@ $ wget https://github.com/fgksgf/GitHub-Trending-Crawler/archive/dev.zip
 $ unzip dev.zip
 $ rm dev.zip
 $ cd GitHub-Trending-Crawler/
+$ virtualenv --no-site-packages env
+$ source env/bin/activate
 $ pip3 install -r requirements.txt
 $ apt-get install python-tk python3-tk
 ```
@@ -29,25 +31,34 @@ $ apt-get install python-tk python3-tk
 ### Linux Server (Recommended)
 
 #### 1. Git & SSH Configuration
+
 [Generating a new SSH key and adding it to the ssh-agent](https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/)
+**No passphrase is recommended.**
 
 #### 2. Credential Storage
+
 To make sure the spider don't need input username and password of your GitHub account when it use `git push`, credential Storage is necessary.
 
 1. create a credential file to save your username and password.
+
 ``` bash
 $ vim .git-credentials
 ```
+
 2. Input the following content and save it, eg.`https://fgksgf:123456@github.com`
+
 ```
 https://{username}:{password}@github.com
 ```
+
 3. Use this command to save the credentials to a plain-text file on disk, and they never expire until you change your password for the Git host.
+
 ``` bash
 $ git config --global credential.helper store
 ```
 
 #### 3. Use Screen Command
+
 1. Use the command to install screen
 ``` bash
 $ sudo apt-get install screen (On Debian based Systems)
