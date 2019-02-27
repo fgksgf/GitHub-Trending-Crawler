@@ -50,11 +50,13 @@ https://{username}:{password}@github.com
 $ git config --global credential.helper store
 ```
 
-#### 4. [Install Docker CE](https://docs.docker.com/install/linux/docker-ce/ubuntu/)
++ Fork my repo or create your own repo for uploading the daily markdown file.
 
-#### 5. Use Docker
+#### 2. [Install Docker CE](https://docs.docker.com/install/linux/docker-ce/ubuntu/)
 
-+ In line sixth of the Dockerfile, enter your github username and email address.
+#### 3. Use Docker
+
++ In line sixth of the Dockerfile, enter your github username, email address and github repository url.
 
 + Under the project directory, use this command to build a docker image:
 
@@ -83,9 +85,9 @@ $ source env/bin/activate
 $ pip3 install -r requirements.txt
 ```
 
-#### 1. Previous three steps ibid
+#### 1. Git & SSH Configuration (**ibid**)
 
-#### 4. Use Screen Command
+#### 2. Use Screen Command
 
 + install screen
 

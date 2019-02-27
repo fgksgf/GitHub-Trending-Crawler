@@ -3,9 +3,14 @@ MAINTAINER  Hoshea Jiang <fgksgf@yahoo.com>
 
 ARG ssh_prv_key
 ARG ssh_pub_key
-ENV USERNAME=fgksgf EMAIL=fgksgf@yahoo.com
+ENV USERNAME=fgksgf \
+    EMAIL=fgksgf@yahoo.com \
+    URL=https://git.dev.tencent.com/zerone01/Github-Trending-Crawler.git
 
-# Authorize SSH Host and add the keys and set permissions
+COPY ./trending.py ./MSYH.TTC ./requirements.txt /code/
+
+WORKDIR /code
+
 RUN apt-get update && \
     apt-get install -y git && \
     mkdir -p /root/.ssh && \
@@ -16,12 +21,8 @@ RUN apt-get update && \
     chmod 600 /root/.ssh/id_rsa && \
     chmod 600 /root/.ssh/id_rsa.pub && \
     git config --global user.name $USERNAME && \
-    git config --global user.email $EMAIL
-
-COPY ./trending.py ./MSYH.TTC ./requirements.txt /code/
-
-WORKDIR /code
-
-RUN mkdir img && \
+    git config --global user.email $EMAIL && \
+    mkdir img && \
     pip install -r requirements.txt && \
-    python trending.py
+    git init && \
+    git remote add origin $URL
