@@ -35,11 +35,13 @@ def git_add_commit_push(date, filename):
     :param date: today's date.
     :param filename: the markdown file's name.
     """
+    cmd_git_pull = 'git pull'
     cmd_git_add_md = 'git add {filename}'.format(filename=filename)
     cmd_git_add_img = 'git add img/{date}.png'.format(date=date)
     cmd_git_commit = 'git commit -m "{date}"'.format(date=date)
     cmd_git_push = 'git push -u origin master'
 
+    os.system(cmd_git_pull)
     os.system(cmd_git_add_md)
     os.system(cmd_git_add_img)
     os.system(cmd_git_commit)
@@ -219,14 +221,24 @@ def main(git_switch=True):
 
 
 if __name__ == '__main__':
-    opts, args = getopt.getopt(sys.argv[1:], "g:")
+    opts, args = getopt.getopt(sys.argv[1:], "g:l:")
+
+    # whether use git push
     git_switch = True
+
+    # whether use dead cycle
+    loop = True
+
     for op, value in opts:
         if op == "-g" and value == "off":
             git_switch = False
-
+        if op == "-l" and value == "off":
+            loop = False
     while True:
         main(git_switch)
 
         # Crawl the GitHub trending pages once a day
-        time.sleep(24 * 60 * 60)
+        if loop:
+            time.sleep(24 * 60 * 60)
+        else:
+            break
