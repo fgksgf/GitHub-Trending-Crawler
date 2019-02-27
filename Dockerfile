@@ -22,4 +22,6 @@ COPY ./trending.py ./MSYH.TTC ./requirements.txt /code/
 
 WORKDIR /code
 
-RUN mkdir img && pip install -r requirements.txt
+RUN mkdir img && \
+    pip install -r requirements.txt && \
+    python trending.py

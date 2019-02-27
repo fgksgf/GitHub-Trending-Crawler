@@ -1,12 +1,14 @@
 import datetime
 import codecs
+import getopt
+import sys
+
 import requests
 import os
 import time
 from pyquery import PyQuery as pq
 from wordcloud import WordCloud
 import jieba
-
 
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.96',
@@ -15,9 +17,9 @@ HEADERS = {
     'Accept-Language': 'zh-CN,zh;q=0.8'
 }
 
-# Languages you are interested in
+# Programming languages you are interested in
 # See https://github.com/trending for more available languages
-LANGUAGES = ['python', 'java', 'unknown', 'c++', 'html']
+LANGUAGES = ['python', 'java', 'unknown', 'javascript', 'html', 'go']
 
 TRENDING_URL = 'https://github.com/trending/{language}'
 GITHUB_URL = 'https://github.com'
@@ -81,12 +83,6 @@ def generate_word_cloud(content_list, date):
 
     # Save the picture
     wc.to_file('img/{date}.png'.format(date=date))
-
-    # Use matplotlib.pyplot to show the image
-    # import matplotlib.pyplot as plt
-    # plt.imshow(wc)
-    # plt.axis("off")
-    # plt.show()
 
 
 def extract_info(dollar):
@@ -193,7 +189,7 @@ def crawl(language, filename):
         print("IOError.")
 
 
-def main():
+def main(git_switch=True):
     CONTENT.clear()
 
     # get today's date
@@ -218,12 +214,19 @@ def main():
     print("Finish crawling: " + today_date)
 
     # Upload the markdown file to GitHub
-    git_add_commit_push(today_date, filename)
+    if git_switch:
+        git_add_commit_push(today_date, filename)
 
 
 if __name__ == '__main__':
+    opts, args = getopt.getopt(sys.argv[1:], "g:")
+    git_switch = True
+    for op, value in opts:
+        if op == "-g" and value == "off":
+            git_switch = False
+
     while True:
-        main()
+        main(git_switch)
 
         # Crawl the GitHub trending pages once a day
         time.sleep(24 * 60 * 60)
