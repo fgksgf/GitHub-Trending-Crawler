@@ -35,13 +35,13 @@ def git_add_commit_push(date, filename):
     :param date: today's date.
     :param filename: the markdown file's name.
     """
-    cmd_git_pull = 'git pull'
+    # cmd_git_pull = 'git pull origin master'
     cmd_git_add_md = 'git add {filename}'.format(filename=filename)
     cmd_git_add_img = 'git add img/{date}.png'.format(date=date)
     cmd_git_commit = 'git commit -m "{date}"'.format(date=date)
     cmd_git_push = 'git push -u origin master'
 
-    os.system(cmd_git_pull)
+    # os.system(cmd_git_pull)
     os.system(cmd_git_add_md)
     os.system(cmd_git_add_img)
     os.system(cmd_git_commit)
