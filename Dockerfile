@@ -16,7 +16,6 @@ RUN apt-get update && \
     mkdir -p /root/.ssh && \
     chmod 0700 /root/.ssh && \
     ssh-keyscan github.com > /root/.ssh/known_hosts && \
-    ssh-keyscan git.dev.tencent.com > /root/.ssh/known_hosts && \
     echo "$ssh_prv_key" > /root/.ssh/id_rsa && \
     echo "$ssh_pub_key" > /root/.ssh/id_rsa.pub && \
     chmod 600 /root/.ssh/id_rsa && \
@@ -26,5 +25,4 @@ RUN apt-get update && \
     mkdir img && \
     pip install -r requirements.txt && \
     git init && \
-    git remote add origin $URL && \
-    python trending.py
+    git remote add origin $URL
