@@ -62,17 +62,14 @@ $ git config --global credential.helper store
 $ docker build -t gitcrawler --build-arg ssh_prv_key="$(cat ~/.ssh/id_rsa)" --build-arg ssh_pub_key="$(cat ~/.ssh/id_rsa.pub)" .
 ```
 
-+ create a container and run it
++ Create a container and run it in the background, you will get a container id
 
 ``` bash
 $ docker run -d gitcrawler:latest
 ```
 
-+ check logs
++ For example, you get container id `ddf7f5f0379d` from last step, then type `docker logs ddf` to check logs.
 
-``` bash
-$ docker logs <container id>
-```
 
 ### without Docker
 
@@ -81,6 +78,8 @@ $ apt-get install python-tk python3-tk
 $ virtualenv --no-site-packages env
 $ source env/bin/activate
 $ pip3 install -r requirements.txt
+$ ssh-keyscan github.com > ~/.ssh/known_hosts
+$ ssh-keyscan git.dev.tencent.com >> /root/.ssh/known_hosts
 ```
 
 #### 1. Previous three steps ibid
