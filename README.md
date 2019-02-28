@@ -30,31 +30,15 @@ $ cd GitHub-Trending-Crawler-dev/
 
 #### 1. Git & SSH Configuration
 
-+ [Generating a new SSH key and adding it to the ssh-agent](https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/).**No passphrase is recommended.**
++ **Fork my repo or create your own repo** for uploading the daily markdown file.
 
-+ To make sure the spider don't need input username and password of your GitHub account when it use `git push`, credential Storage is necessary. Create a credential file to save your username and password.
++ [Generating a new SSH key and adding it to the ssh-agent](https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/). **No passphrase is recommended.**
 
-``` bash
-$ vim .git-credentials
-```
+#### 2. [Install Docker CE](https://docs.docker.com/install/linux/docker-ce/ubuntu/)
 
-+ Input the following content and save it, eg.`https://fgksgf:123456@github.com`
+#### 3. Use Docker
 
-```
-https://{username}:{password}@github.com
-```
-
-+ Use this command to save the credentials to a plain-text file on disk, and they never expire until you change your password for the Git host.
-
-``` bash
-$ git config --global credential.helper store
-```
-
-#### 4. [Install Docker CE](https://docs.docker.com/install/linux/docker-ce/ubuntu/)
-
-#### 5. Use Docker
-
-+ In line sixth of the Dockerfile, enter your github username and email address.
++ **In line sixth of the Dockerfile, enter your github username, email address and github repository url.**
 
 + Under the project directory, use this command to build a docker image:
 
@@ -82,9 +66,9 @@ $ ssh-keyscan github.com > ~/.ssh/known_hosts
 $ ssh-keyscan git.dev.tencent.com >> ~/.ssh/known_hosts
 ```
 
-#### 1. Previous three steps ibid
+#### 1. Git & SSH Configuration (**ibid**)
 
-#### 4. Use Screen Command
+#### 2. Use Screen Command
 
 + install screen
 
@@ -100,11 +84,11 @@ $ sudo yum install screen
 
 + When you enter the screen, you can do all your work as you are in the normal CLI environment. But since the screen is an application, so it have command or parameters.
 
-And now, we can run the program:
++ And now, we can run the program: `python3 trending.py`
 
-``` bash
-$ python3 trending.py 
-```
++ _If you only want to get the markdown file, you can type `python3 trending.py -g off`._
+
++ _If you only want to run the program once, type `python3 trending.py -l off`._
 
 + While the program is running, you can press “Ctrl-A” and “d“ to detach the screen. Then you can disconnect your SSH session.
 
