@@ -20,7 +20,7 @@ It requires the Python interpreter, **version 3.5+.**
 $ wget https://github.com/fgksgf/GitHub-Trending-Crawler/archive/dev.zip
 $ unzip dev.zip
 $ rm dev.zip
-$ cd GitHub-Trending-Crawler/
+$ cd GitHub-Trending-Crawler-dev/
 ```
 
 
@@ -63,7 +63,7 @@ $ virtualenv --no-site-packages env
 $ source env/bin/activate
 $ pip3 install -r requirements.txt
 $ ssh-keyscan github.com > ~/.ssh/known_hosts
-$ ssh-keyscan git.dev.tencent.com >> /root/.ssh/known_hosts
+$ ssh-keyscan git.dev.tencent.com >> ~/.ssh/known_hosts
 ```
 
 #### 1. Git & SSH Configuration (**ibid**)
