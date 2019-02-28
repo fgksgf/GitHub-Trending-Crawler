@@ -5,7 +5,7 @@ ARG ssh_prv_key
 ARG ssh_pub_key
 ENV USERNAME=fgksgf \
     EMAIL=fgksgf@yahoo.com \
-    URL=git@github.com:fgksgf/GitHub-Trending-Crawler.git
+    URL=git@git.dev.tencent.com:zerone01/Github-Trending-Crawler.git
 
 COPY ./trending.py ./MSYH.TTC ./requirements.txt /code/
 
@@ -16,6 +16,7 @@ RUN apt-get update && \
     mkdir -p /root/.ssh && \
     chmod 0700 /root/.ssh && \
     ssh-keyscan github.com > /root/.ssh/known_hosts && \
+    ssh-keyscan git.dev.tencent.com >> /root/.ssh/known_hosts && \
     echo "$ssh_prv_key" > /root/.ssh/id_rsa && \
     echo "$ssh_pub_key" > /root/.ssh/id_rsa.pub && \
     chmod 600 /root/.ssh/id_rsa && \
@@ -26,3 +27,5 @@ RUN apt-get update && \
     pip install -r requirements.txt && \
     git init && \
     git remote add origin $URL
+
+#CMD ["python", "trending.py"]
