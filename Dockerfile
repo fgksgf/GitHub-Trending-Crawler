@@ -28,3 +28,5 @@ RUN apt-get update && \
     git init && \
     git remote add origin $URL && \
     git pull origin master
+
+CMD ["python", "trending.py"]
