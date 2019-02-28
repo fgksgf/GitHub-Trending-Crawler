@@ -26,6 +26,5 @@ RUN apt-get update && \
     mkdir img && \
     pip install -r requirements.txt && \
     git init && \
-    git remote add origin $URL
-
-#CMD ["python", "trending.py"]
+    git remote add origin $URL && \
+    git pull origin master
