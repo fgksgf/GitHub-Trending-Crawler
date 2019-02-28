@@ -63,7 +63,7 @@ $ virtualenv --no-site-packages env
 $ source env/bin/activate
 $ pip3 install -r requirements.txt
 $ ssh-keyscan github.com > ~/.ssh/known_hosts
-$ ssh-keyscan git.dev.tencent.com >> /root/.ssh/known_hosts && \
+$ ssh-keyscan git.dev.tencent.com >> /root/.ssh/known_hosts
 ```
 
 #### 1. Git & SSH Configuration (**ibid**)
