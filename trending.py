@@ -21,7 +21,7 @@ HEADERS = {
 # See https://github.com/trending for more available languages
 LANGUAGES = ['python', 'java', 'unknown', 'javascript', 'html', 'go']
 
-TRENDING_URL = 'https://github.com/trending/{language}'
+TRENDING_URL = 'https://github.com/trending/{language}?since=daily'
 GITHUB_URL = 'https://github.com'
 
 # Used to store today's repos' descriptions
@@ -99,12 +99,12 @@ def extract_info(dollar):
     stars = []
     descriptions = []
 
-    ol = dollar('.repo-list').children()
-    for i in range(len(ol)):
-        li = ol.eq(i)
+    articles = dollar('.explore-pjax-container > div > div.col-md-9 > div > div:nth-child(2)').children()
+    for i in range(len(articles)):
+        article = articles.eq(i)
 
         # postfix: '/Username/RepoName'
-        postfix = li('div.d-inline-block.col-9.mb-1 > h3 > a').attr('href')
+        postfix = article('.lh-condensed a').attr('href')
 
         # the complete url of the repo
         url = GITHUB_URL + postfix
@@ -116,12 +116,12 @@ def extract_info(dollar):
         names.append(repo_name)
 
         # Get the description about the repo
-        description = li('.py-1').text().strip().replace('\n', '')
+        description = article('.col-9.text-gray.my-1.pr-4').text().strip().replace('\n', '')
         descriptions.append(description)
         CONTENT.append(description)
 
         # Get how many stars it got today
-        star = li('div.f6.text-gray.mt-2 > span.d-inline-block.float-sm-right').text().strip()
+        star = article('div.f6.text-gray.mt-2 > span.d-inline-block.float-sm-right').text().strip()
         stars.append(star)
 
     ret_dict = {'names': names, 'urls': urls, 'stars': stars, 'descriptions': descriptions}
