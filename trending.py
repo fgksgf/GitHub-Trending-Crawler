@@ -99,7 +99,7 @@ def extract_info(dollar):
     stars = []
     descriptions = []
 
-    articles = dollar('.explore-pjax-container > div > div.col-md-9 > div > div:nth-child(2)').children()
+    articles = dollar('.explore-pjax-container.container-lg.p-responsive.pt-6 > div > div:nth-child(2)').children()
     for i in range(len(articles)):
         article = articles.eq(i)
 
