@@ -6,23 +6,11 @@ import sys
 import requests
 import os
 import time
-from pyquery import PyQuery as pq
+
 from wordcloud import WordCloud
 import jieba
 
-HEADERS = {
-    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.96',
-    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-    'Accept-Encoding': 'gzip,deflate,sdch',
-    'Accept-Language': 'zh-CN,zh;q=0.8'
-}
 
-# Programming languages you are interested in
-# See https://github.com/trending for more available languages
-LANGUAGES = ['python', 'java', 'unknown', 'javascript', 'html', 'go']
-
-TRENDING_URL = 'https://github.com/trending/{language}'
-GITHUB_URL = 'https://github.com'
 
 # Used to store today's repos' descriptions
 CONTENT = []
@@ -85,47 +73,6 @@ def generate_word_cloud(content_list, date):
     wc.to_file('img/{date}.png'.format(date=date))
 
 
-def extract_info(dollar):
-    """
-    Extract useful information from html by pyquery, 
-    which contains the repo's url, name, description
-    and stars it got today.
-    
-    :param dollar: the pyquery object, just like $ in jquery 
-    :return: a dict includes above information
-    """
-    names = []
-    urls = []
-    stars = []
-    descriptions = []
-
-    ol = dollar('.repo-list').children()
-    for i in range(len(ol)):
-        li = ol.eq(i)
-
-        # postfix: '/Username/RepoName'
-        postfix = li('div.d-inline-block.col-9.mb-1 > h3 > a').attr('href')
-
-        # the complete url of the repo
-        url = GITHUB_URL + postfix
-        urls.append(url)
-
-        p = postfix.rindex('/')
-        # owner = postfix[:p]
-        repo_name = postfix[p + 1:]
-        names.append(repo_name)
-
-        # Get the description about the repo
-        description = li('.py-1').text().strip().replace('\n', '')
-        descriptions.append(description)
-        CONTENT.append(description)
-
-        # Get how many stars it got today
-        star = li('div.f6.text-gray.mt-2 > span.d-inline-block.float-sm-right').text().strip()
-        stars.append(star)
-
-    ret_dict = {'names': names, 'urls': urls, 'stars': stars, 'descriptions': descriptions}
-    return ret_dict
 
 
 def append_text_to_md(filename, language, info):
@@ -163,30 +110,7 @@ def append_img_to_md(filename, date):
         f.write('![]({path})\n'.format(path=img_path))
 
 
-def crawl(language, filename):
-    """ 
-    Crawling the GitHub trending page of the language.
-    
-    :param language: the page of the language you want to get.
-    :param filename: the markdown file's name
-    """
-    try:
-        url = TRENDING_URL.format(language=language)
-        r = requests.get(url, headers=HEADERS)
 
-        # If the status code is not 200, then raise the error
-        r.raise_for_status()
-
-        # Use pyquery to parse html
-        d = pq(r.text)
-
-        info = extract_info(d)
-        append_text_to_md(filename, language, info)
-        print("Done: " + language)
-    except requests.ConnectionError:
-        print("Connection Error.")
-    except IOError:
-        print("IOError.")
 
 
 def main(git_switch=True):
