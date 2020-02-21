@@ -23,3 +23,11 @@ class RepoInfo:
 
         # description of the repository
         self.desc = desc
+
+    def __str__(self):
+        """
+
+        :return:
+        """
+        pattern = u"+ [{name}]({url})(**{stars} stars {frequency}**): {desc}\n"
+        return pattern.format(name=self.name, url=self.url, desc=self.desc, star=self.stars)

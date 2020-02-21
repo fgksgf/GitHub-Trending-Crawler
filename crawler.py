@@ -4,6 +4,7 @@ import requests
 from pyquery import PyQuery as pq
 
 from repository_info import RepoInfo
+from utils.file_util import append_infos_to_md
 
 
 class GitHubCrawler:
@@ -56,6 +57,11 @@ class GitHubCrawler:
         return repo_infos
 
     def crawl(self, lang):
+        """
+
+        :param lang:
+        :return:
+        """
         ret = []
         try:
             url = self.TRENDING_URL.format(language=lang)
@@ -66,17 +72,18 @@ class GitHubCrawler:
 
             # Use pyquery to parse html
             infos = self.__parse(pq(r.text))
-            append_text_to_md(filename, language, info)
+            append_infos_to_md(filename, lang, infos)
 
         except Exception as e:
             self.logger.exception(e)
         else:
             self.logger.info('Done: %s', lang)
 
-def crawl(language, filename):
-    """
-    Crawling the GitHub trending page of the language.
+    def run(self):
+        """
+        Crawling the GitHub trending page of the language.
 
-    :param language: the page of the language you want to get.
-    :param filename: the markdown file's name
-    """
+        :param language: the page of the language you want to get.
+        :param filename: the markdown file's name
+        """
+        pass
