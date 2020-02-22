@@ -1,3 +1,6 @@
+import os
+
+
 def git_add_commit_push(date, filename):
     """
     Upload the markdown file and the image to GitHub by git.

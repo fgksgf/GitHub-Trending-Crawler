@@ -1,5 +1,10 @@
 import codecs
 
+import jieba
+from wordcloud import WordCloud
+
+from config import IMG_FILE_NAME, WC_BG_COLOR, WC_RANDOM_STATE, WC_FONT_PATH, WC_MARGIN, WC_HEIGHT, WC_WIDTH
+
 
 def create_markdown(date, filename):
     """
@@ -13,31 +18,32 @@ def create_markdown(date, filename):
         f.write("See what the GitHub community is most excited about.\n")
 
 
-def generate_word_cloud(content_list, date):
+def generate_wordcloud(descriptions, filename):
     """
-    Generate a word cloud picture according to all descriptions of today.
-    Then save the picture at 'img/', which is named by date.
+    Generate a wordcloud chart according to all descriptions of repositories.
 
-    :param content_list: a list contains all descriptions of today.
-    :param date: today's date.
+    :param descriptions: a list contains all descriptions of today.
+    :param filename: the name of wordcloud chart.
     """
-    # Join all strings in the list with ''
-    text = ''.join(content_list)
+    # join all strings in the list with ''
+    text = ''.join(descriptions)
 
-    # Use jieba to do Chinese word segmentation first
+    # use jieba to do Chinese word segmentation first
     word_list = jieba.cut(text, cut_all=False)
     f = " ".join(word_list)
 
-    # Set the word cloud's attributes
-    wc = WordCloud(background_color="white",
-                   width=800,
-                   height=600,
-                   margin=2,
-                   font_path='MSYH.TTC',  # Use this font to ensure Chinese words can be shown
-                   random_state=20).generate(f)
+    # set the word cloud's attributes
+    wc = WordCloud(background_color=WC_BG_COLOR,
+                   width=WC_WIDTH,
+                   height=WC_HEIGHT,
+                   margin=WC_MARGIN,
+                   font_path=WC_FONT_PATH,  # Use this font to ensure Chinese words can be shown
+                   random_state=WC_RANDOM_STATE).generate(f)
 
-    # Save the picture
-    wc.to_file('img/{date}.png'.format(date=date))
+    # save the chart as png file
+    path = IMG_FILE_NAME.format(name=filename)
+    wc.to_file(path)
+    return path
 
 
 def append_infos_to_md(filename, language, infos):
@@ -48,22 +54,20 @@ def append_infos_to_md(filename, language, infos):
     :param language: the programming language
     :param infos: a dict contains all repos' information
     """
-    # Use codecs to solve the utf-8 encoding problem like Chinese
+    # use codecs to solve the utf-8 encoding problem like Chinese
     with codecs.open(filename, "a", "utf-8") as f:
         f.write('\n## {language}\n'.format(language=language))
-        for repo in infos:
-            f.write(repo)
+        for info in infos:
+            f.write(info.convert_to_md())
 
 
-def append_img_to_md(filename, date):
+def append_img_to_md(img_path, md_path):
     """
-    Append an image of word cloud based on all descriptions
-    to the markdown file.
+    Append an image of wordcloud to the markdown file.
 
-    :param filename: the markdown file's name
-    :param date: today's date, the image's name as well
+    :param img_path: the image's path and name
+    :param md_path: the markdown file's path and name
     """
-    img_path = 'img/{date}.png'.format(date=date)
-    with codecs.open(filename, "a", "utf-8") as f:
+    with codecs.open(md_path, "a", "utf-8") as f:
         f.write('\n## WordCloud\n')
         f.write('![]({path})\n'.format(path=img_path))

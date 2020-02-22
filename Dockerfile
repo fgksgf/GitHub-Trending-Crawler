@@ -1,5 +1,5 @@
-FROM python:3.5-slim
-MAINTAINER  Hoshea Jiang <fgksgf@yahoo.com>
+FROM python:3.6-slim
+MAINTAINER  Hoshea Jiang <fgksgf@gmail.com>
 
 ARG ssh_prv_key
 ARG ssh_pub_key
@@ -7,7 +7,7 @@ ENV USERNAME=fgksgf \
     EMAIL=fgksgf@yahoo.com \
     URL=git@git.dev.tencent.com:zerone01/Github-Trending-Crawler.git
 
-COPY ./trending.py ./MSYH.TTC ./requirements.txt /code/
+COPY run.py ./MSYH.TTC ./requirements.txt /code/
 
 WORKDIR /code
 

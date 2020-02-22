@@ -18,16 +18,20 @@ class RepoInfo:
         # the complete url of the repository
         self.url = self.GITHUB_URL + href
 
-        # the number of stars it got
-        self.stars = stars
+        # status about how many stars it got, a string
+        self.star_status = stars
 
         # description of the repository
         self.desc = desc
 
-    def __str__(self):
+    def convert_to_md(self):
         """
+        Convert repository info into markdown format.
 
         :return:
         """
-        pattern = u"+ [{name}]({url})(**{stars} stars {frequency}**): {desc}\n"
-        return pattern.format(name=self.name, url=self.url, desc=self.desc, star=self.stars)
+        pattern = u"+ [{name}]({url})(**{stars}**): {desc}\n"
+        return pattern.format(name=self.name, url=self.url, desc=self.desc, stars=self.star_status)
+
+    def __str__(self):
+        return str({'name': self.name, 'url': self.url, 'star_status': self.star_status, 'desc': self.desc})

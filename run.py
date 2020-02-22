@@ -26,26 +26,7 @@ CONTENT = []
 def main(git_switch=True):
     CONTENT.clear()
 
-    # get today's date
-    today_date = datetime.datetime.now().strftime('%Y-%m-%d')
 
-    # The markdown file's name
-    filename = '{date}.md'.format(date=today_date)
-
-    # Create markdown file
-    create_markdown(today_date, filename)
-
-    for lang in LANGUAGES:
-        try:
-            crawl(lang, filename)
-        except:
-            print("Error: " + lang)
-            time.sleep(2)
-            continue
-
-    generate_word_cloud(CONTENT, today_date)
-    append_img_to_md(filename, today_date)
-    print("Finish crawling: " + today_date)
 
     # Upload the markdown file to GitHub
     if git_switch:
