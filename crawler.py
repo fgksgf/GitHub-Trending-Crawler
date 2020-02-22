@@ -15,7 +15,14 @@ class GitHubCrawler:
     GitHub trending crawler
     """
 
-    def __init__(self):
+    def __init__(self, frequency='daily', use_proxy=False):
+        if frequency not in FREQUENCY:
+            self.frequency = 'daily'
+        else:
+            self.frequency = frequency
+
+        self.use_proxy = use_proxy
+
         # init logger
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(level=logging.INFO)
@@ -28,8 +35,12 @@ class GitHubCrawler:
         stream_handler.setFormatter(formatter)
         self.logger.addHandler(stream_handler)
 
-    @staticmethod
-    def get_random_proxy():
+    def get_random_proxy(self):
+        """
+        Get a random proxy.
+
+        :return: a proxy or None
+        """
         proxies = {
             'http': '',
             'https': '',
@@ -40,7 +51,8 @@ class GitHubCrawler:
                 proxy = 'http://' + str(response.json()['proxy'])
                 proxies['http'] = proxy
                 proxies['https'] = proxy
-        except requests.ConnectionError:
+        except Exception:
+            self.logger.error('Failed to get a proxy!')
             return None
         else:
             return proxies
@@ -75,23 +87,19 @@ class GitHubCrawler:
 
         return repo_infos
 
-    def crawl(self, lang, frequency='daily', use_proxy=False):
+    def crawl(self, lang):
         """
         Crawl a programming language trending page.
 
         :param lang: programming language name
-        :param frequency:
-        :param use_proxy:
+        :return: a list includes many `RepoInfo` objects
         """
         ret = None
         try:
-            if frequency not in FREQUENCY:
-                raise ValueError('Wrong frequency parameter!')
-
-            url = TRENDING_URL.format(language=lang, frequency=frequency)
+            url = TRENDING_URL.format(language=lang, frequency=self.frequency)
 
             proxies = None
-            if use_proxy:
+            if self.use_proxy:
                 proxies = self.get_random_proxy()
             if proxies:
                 r = requests.get(url, headers=HEADERS, proxies=proxies)
@@ -115,9 +123,11 @@ class GitHubCrawler:
             self.logger.info('Done: %s', lang)
         return ret
 
-    def run(self, langs=LANGUAGES, frequency='daily'):
+    def run(self, langs=LANGUAGES):
         """
         Crawling the GitHub trending page of the language.
+
+        :param langs: list of programming language names to be crawled
         """
         # get today's date
         today_date = datetime.datetime.now().strftime('%Y-%m-%d')
@@ -128,7 +138,7 @@ class GitHubCrawler:
 
         descriptions = []
         for lang in langs:
-            infos = self.crawl(lang, frequency)
+            infos = self.crawl(lang)
             append_infos_to_md(filename, lang, infos)
             for info in infos:
                 descriptions.append(info.desc)
@@ -136,11 +146,3 @@ class GitHubCrawler:
         path = generate_wordcloud(descriptions=descriptions, filename=today_date)
         append_img_to_md(img_path=path, md_path=filename)
         self.logger.info("Finish crawling: %s", today_date)
-
-
-if __name__ == '__main__':
-    crawler = GitHubCrawler()
-    # repos = crawler.crawl('python')
-    # for i in range(5):
-    #     print(repos[i])
-    crawler.run(langs=['html'])

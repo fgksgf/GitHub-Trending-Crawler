@@ -1,3 +1,22 @@
+# programming languages you are interested in
+LANGUAGES = ['python', 'java', 'unknown', 'javascript', 'html', 'go']
+
+# frequency of trending
+FREQUENCY = ['daily', 'weekly', 'monthly']
+
+# wordcloud chart config
+WC_BG_COLOR = 'white'  # background color
+WC_WIDTH = 800
+WC_HEIGHT = 600
+WC_MARGIN = 2
+WC_FONT_PATH = 'MSYH.TTC'  # use this font to ensure Chinese words can be shown
+WC_RANDOM_STATE = 20
+
+# proxy pool api
+PROXY_POOL_API = {
+    'get_a_proxy': '',
+}
+
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.96',
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
@@ -7,25 +26,6 @@ HEADERS = {
 
 TRENDING_URL = 'https://github.com/trending/{language}?since={frequency}'
 
-# frequency of trending
-FREQUENCY = ['daily', 'weekly', 'monthly']
-
-# programming languages you are interested in
-LANGUAGES = ['python', 'java', 'unknown', 'javascript', 'html', 'go']
-
 MD_FILE_NAME = '{name}.md'
 
 IMG_FILE_NAME = 'img/{name}.png'
-
-# wordcloud chart config
-WC_BG_COLOR = 'white'  # background color
-WC_WIDTH = 600
-WC_HEIGHT = 400
-WC_MARGIN = 2
-WC_FONT_PATH = 'MSYH.TTC'  # use this font to ensure Chinese words can be shown
-WC_RANDOM_STATE = 20
-
-# proxy pool api
-PROXY_POOL_API = {
-    'get_a_proxy': 'http://118.24.52.95/get',
-}

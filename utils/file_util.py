@@ -1,6 +1,6 @@
 import codecs
-
 import jieba
+import matplotlib.pyplot as plt
 from wordcloud import WordCloud
 
 from config import IMG_FILE_NAME, WC_BG_COLOR, WC_RANDOM_STATE, WC_FONT_PATH, WC_MARGIN, WC_HEIGHT, WC_WIDTH
@@ -18,12 +18,13 @@ def create_markdown(date, filename):
         f.write("See what the GitHub community is most excited about.\n")
 
 
-def generate_wordcloud(descriptions, filename):
+def generate_wordcloud(descriptions, filename, debug=False):
     """
     Generate a wordcloud chart according to all descriptions of repositories.
 
     :param descriptions: a list contains all descriptions of today.
     :param filename: the name of wordcloud chart.
+    :param debug:
     """
     # join all strings in the list with ''
     text = ''.join(descriptions)
@@ -39,6 +40,13 @@ def generate_wordcloud(descriptions, filename):
                    margin=WC_MARGIN,
                    font_path=WC_FONT_PATH,  # Use this font to ensure Chinese words can be shown
                    random_state=WC_RANDOM_STATE).generate(f)
+
+    if debug:
+        # use matplotlib to display wordcloud chart for debugging
+        plt.imshow(wc, interpolation='bilinear')
+        plt.axis("off")
+        plt.figure()
+        plt.show()
 
     # save the chart as png file
     path = IMG_FILE_NAME.format(name=filename)

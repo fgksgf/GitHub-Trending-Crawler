@@ -11,7 +11,7 @@ The web crawler is designed to help me keep track of the latest trends in techno
 
 The idea was inspired by [LJ147](https://github.com/LJ147/GithubTrending).
 
-It requires the Python interpreter, **version 3.5+.**
+It requires the Python interpreter, **version 3.6+.**
 
 
 ## Installation
@@ -101,11 +101,13 @@ $ screen -r
 _For more information about screen command, you can visit [here](https://www.tecmint.com/screen-command-examples-to-manage-linux-terminals/)._
 
 
-## TODO
+## Change Logs
 
-- [x] Add command-line usage feature
-- [x] Dockerize the crawler
-- [ ] Refactor code with object-oriented methods
-- [ ] Improve exception handling
-- [ ] Add logging feature
+### V1.5 (2020-02-22)
 
++ Refactor code with object-oriented methods
++ Split single python file into several files
++ Improve exception handling
++ Add logging feature
++ Mount code rather than copy code into docker image
++ Enhance command-line usage
