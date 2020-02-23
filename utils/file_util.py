@@ -1,6 +1,5 @@
 import codecs
 import jieba
-import matplotlib.pyplot as plt
 from wordcloud import WordCloud
 
 from config import IMG_FILE_NAME, WC_BG_COLOR, WC_RANDOM_STATE, WC_FONT_PATH, WC_MARGIN, WC_HEIGHT, WC_WIDTH
@@ -43,6 +42,7 @@ def generate_wordcloud(descriptions, filename, debug=False):
 
     if debug:
         # use matplotlib to display wordcloud chart for debugging
+        import matplotlib.pyplot as plt
         plt.imshow(wc, interpolation='bilinear')
         plt.axis("off")
         plt.figure()

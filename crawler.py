@@ -16,11 +16,7 @@ class GitHubCrawler:
     """
 
     def __init__(self, frequency='daily', use_proxy=False):
-        if frequency not in FREQUENCY:
-            self.frequency = 'daily'
-        else:
-            self.frequency = frequency
-
+        self.frequency = frequency
         self.use_proxy = use_proxy
 
         # init logger
