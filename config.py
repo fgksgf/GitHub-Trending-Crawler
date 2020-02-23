@@ -1,4 +1,4 @@
-# programming languages you are interested in
+# programming languages you are interested in and want to crawl
 LANGUAGES = ['python', 'java', 'unknown', 'javascript', 'html', 'go']
 
 # frequency of trending
@@ -16,6 +16,8 @@ WC_RANDOM_STATE = 20
 PROXY_POOL_API = {
     'get_a_proxy': '',
 }
+
+DAY = 24 * 60 * 60
 
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.96',
