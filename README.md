@@ -25,14 +25,19 @@ The idea was inspired by [LJ147](https://github.com/LJ147/GithubTrending).
 
 ## Usage on Linux
 
-The `release` branch is stable, and there is only code. 
-
 ``` bash
-$ sudo apt install -y unzip screen
+$ sudo apt install -y unzip screen python3-pip
+$ sudo apt-get install -y python-tk python3-tk
+
+# the `release` branch is stable, and there is only code. 
 $ wget https://github.com/fgksgf/GitHub-Trending-Crawler/archive/release.zip
 $ unzip release.zip
 $ cd GitHub-Trending-Crawler-release/
-$ apt-get install python-tk python3-tk
+$ mkdir img
+$ git init
+$ git remote add origin <YourGitHubRepoURL>
+
+# using virtual environment is highly recommended
 $ pip3 install -r requirements.txt
 ```
 
