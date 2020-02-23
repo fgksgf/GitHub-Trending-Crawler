@@ -53,13 +53,13 @@ Options:
 + Under the project directory, use this command to build a docker image:
 
 ``` bash
-$ docker build -t gitcrawler --build-arg ssh_prv_key="$(cat ~/.ssh/id_rsa)" --build-arg ssh_pub_key="$(cat ~/.ssh/id_rsa.pub)" .
+$ docker build -t gitcrawler .
 ```
 
 + Create a container and run it in the background, you will get a container id
 
 ``` bash
-$ docker run -d gitcrawler:latest
+$ docker run -d gitcrawler:latest -v /<YourAbsolutePath>/GitHub-Trending-Crawler:/code -v ~/.ssh:/root/.ssh
 ```
 
 + Then use  `docker logs <container id>` to check logs.
